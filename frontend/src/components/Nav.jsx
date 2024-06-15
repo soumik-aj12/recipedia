@@ -24,7 +24,8 @@ export const Nav = () => {
           <li><Link to="/" className="text-white hover:text-gray-300">Home</Link></li>
             {cookies.access_token?(<>
               <li><Link to="/create_recipe" className="text-white hover:text-gray-300">Create Recipe</Link></li>
-            <li><Link to="/view_recipes" className="text-white hover:text-gray-300">View Recipes</Link></li>
+            <li><Link to="/created" className="text-white hover:text-gray-300">Created Recipes</Link></li>
+            <li><Link to="/saved" className="text-white hover:text-gray-300">Saved Recipes</Link></li>
             </>):""}
             {
               cookies.access_token?(<button
@@ -57,7 +58,8 @@ export const Nav = () => {
           <li><Link to="/" className="text-white hover:text-gray-300">Home</Link></li>
             {cookies.access_token?(<>
               <li><Link to="/create_recipe" className="text-white hover:text-gray-300">Create Recipe</Link></li>
-            <li><Link to="/view_recipes" className="text-white hover:text-gray-300">View Recipes</Link></li>
+            <li><Link to="/created" className="text-white hover:text-gray-300">Created Recipes</Link></li>
+            <li><Link to="/saved" className="text-white hover:text-gray-300">Saved Recipes</Link></li>
             </>):""}
             {
               cookies.access_token?(<button

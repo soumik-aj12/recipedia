@@ -4,35 +4,35 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { SavedRecipe } from "../components/SavedRecipe";
-export const Show = () => {
+export const SavedRecipePage = () => {
   const navigate = useNavigate();
   const [cookies, setCookies] = useCookies(["access_token"]);
-  if (!cookies) {
-    navigate("/auth");
-  }
+
   const [savedRecipes, setSavedRecipes] = useState([]);
   const [recipes, setRecipes] = useState([]);
   // console.log(id)
+  const UserID = window.localStorage.getItem("UserID");
   useEffect(() => {
+    if (cookies.access_token === "") {
+      navigate("/auth");
+    }
     const fetchSavedRecipes = async () => {
       try {
         // Fetch saved recipes array from the user's collection
-        const id = window.localStorage.getItem("UserID");
-        console.log(id);
+        console.log(UserID);
         const response = await axios.get(
           "http://localhost:8080/auth/savedRecipes",
-          { params: { id } }
+          { params: { UserID } }
         );
 
-        const savedRecipeIds = response.data.savedRecipes;
+        const savedRecipeIds = response.data;
         console.log(savedRecipeIds);
 
-        // Fetch recipe details for each saved recipe ID
-        const recipeRequests = savedRecipeIds.map(recipeId =>
+        const recipeRequests = savedRecipeIds.map((recipeId) =>
           axios.get(`http://localhost:8080/recipe/${recipeId}`)
         );
         const recipeResponses = await Promise.all(recipeRequests);
-        const fetchedRecipes = recipeResponses.map(response => response.data);
+        const fetchedRecipes = recipeResponses.map((response) => response.data);
 
         setRecipes(fetchedRecipes);
       } catch (error) {
@@ -43,17 +43,34 @@ export const Show = () => {
     fetchSavedRecipes();
   }, []);
 
+  const unsaveClick = async (recipeID) => {
+    const response = await axios.put("http://localhost:8080/recipe/unsave", {
+      UserID,
+      recipeID,
+    });
+    if (response) {
+      // setRecipes((prevRecipes) => [...prevRecipes, response.data.savedRecipes]);
+      setRecipes((prevRecipes) => prevRecipes.filter((r) => r._id !== recipeID))
+    }
+  };
+
+  const handleViewRecipe = (recipe) => {
+    setSelectedRecipe(recipe);
+    setIsModalOpen(true);
+  };
+  console.log(savedRecipes);
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center p-6 gap-4">
       {recipes.map((recipe) => (
         <SavedRecipe
-          key={recipe.id}
+          key={recipe._id}
           imageURL={recipe.imageURL}
+          recipeID={recipe._id}
           recipeName={recipe.name}
           recipeTime={recipe.time}
-          userId={recipe.userId} // Assuming userId is included in recipe data
+          userId={recipe.userId}
+          onUnSaveClick={() => unsaveClick(recipe._id)}
           onButtonClick={() => handleButtonClick(recipe.id)}
-          onLoveClick={() => handleLoveClick(recipe.id)}
         />
       ))}
     </div>

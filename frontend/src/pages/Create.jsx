@@ -1,7 +1,10 @@
 import axios from "axios";
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 export const Create = () => {
+  const [cookies, setCookies] = useCookies(["access_token"]);
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [time, setTime] = useState("");
   const [imageURL, setImageUrl] = useState("");
@@ -14,7 +17,11 @@ export const Create = () => {
       setIngredientInput("");
     }
   };
-
+  useEffect(()=>{
+    if (cookies.access_token==="") {
+      navigate("/auth");
+    }
+  },[])
   const handleRemoveIngredient = (index) => {
     const updatedIngredients = [...ingredients];
     updatedIngredients.splice(index, 1);

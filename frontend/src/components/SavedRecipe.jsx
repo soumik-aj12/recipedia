@@ -1,10 +1,11 @@
 import React from "react";
 export const SavedRecipe = ({
+  recipeID,
   imageURL,
   recipeName,
   recipeTime,
   onButtonClick,
-  onLoveClick,
+  onUnSaveClick,
 }) => {
   return (
     <div
@@ -31,10 +32,10 @@ export const SavedRecipe = ({
             View Recipe
           </button>
           <button
-            onClick={onLoveClick}
+            onClick={() => onUnSaveClick(recipeID)}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
-            ❤️ Love
+            Saved
           </button>
         </div>
       </div>
